@@ -1,10 +1,12 @@
 import os
 import csv
 from statistics import mean
+
 # dev
 user_search_path = 'data'
 user_extension = '.csv'
 user_Name = 'AAPL'
+
 
 # dev
 
@@ -19,12 +21,9 @@ def search_reports(search_path, extension):
 
 
 reports = search_reports(user_search_path, user_extension)
-print(reports)
-
-tst = reports[0]
 
 
-def get_data(file_path):
+def get_rows(file_path):
     res = []
     with open(file_path, 'r') as csvfile:
         reader = csv.DictReader(csvfile, delimiter=',')
@@ -32,28 +31,29 @@ def get_data(file_path):
             res.append(row)
     return res
 
-data = []
 
-for report in reports:
-    rows = get_data(report)
-    for row in rows:
-        if row['Name'] == user_Name:
-            data.append(row)
+def main():
+    result = {
+        'open': [],
+        'high': [],
+        'low': [],
+        'close': []
+    }
 
-results = {
-    'open': [],
-    'high': [],
-    'low': [],
-    'close': []
-}
-for row in data:
-    results['open'].append(float(row['open']))
-    results['high'].append(float(row['high']))
-    results['low'].append(float(row['low']))
-    results['close'].append(float(row['close']))
+    for report in reports:
+        rows = get_rows(report)
+        for row in rows:
+            if row['Name'] == user_Name:
+                result['open'].append(float(row['open']))
+                result['high'].append(float(row['high']))
+                result['low'].append(float(row['low']))
+                result['close'].append(float(row['close']))
 
-result = {}
-for key, val in results.items():
-    result[key] = round(mean(results[key]), 3)
+    for key, val in result.items():
+        result[key] = round(mean(result[key]), 3)
+    return result
 
-print(result)
+
+if __name__ == '__main__':
+    output = main()
+    print(output)
