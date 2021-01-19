@@ -11,7 +11,6 @@ python3 main.py data/ AAPL
 
 ### Для запуска тестов:
  - python -m unittest tests/full_test.py
-или
  - pytest -s
 
 *\*выполнять из корневой директории проекта*
