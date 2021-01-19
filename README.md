@@ -10,7 +10,7 @@ python3 main.py data/ AAPL
 
 
 ### Для запуска тестов:
- - python3 main.py data/ AAPL
+ - python -m unittest tests/full_test.py
 или
  - pytest -s
 
