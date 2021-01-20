@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import unittest
 from main import search_reports, get_rows, main
 from collections import OrderedDict
