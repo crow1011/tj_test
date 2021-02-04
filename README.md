@@ -18,6 +18,6 @@ python3 main.py data/ AAPL
 
 ___________________________________________________________
 
-Замеры на 122к строк в одном из файлов
-Без генераторов: Current memory usage is 0.01916MB; Peak was 162.234025MB
-С генераторами: Current memory usage is 0.017957MB; Peak was 15.973011MB
+# Замеры на 122к строк в одном из файлов
+- Без генераторов: Current memory usage is 0.01916MB; Peak was 162.234025MB
+- С генераторами: Current memory usage is 0.017957MB; Peak was 15.973011MB
