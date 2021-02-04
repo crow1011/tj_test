@@ -3,26 +3,23 @@ import os
 import csv
 import argparse
 from statistics import mean
-
-debug = False
-
+import timeit
+import tracemalloc
+debug = True
+tracemalloc.start()
 
 def search_reports(search_path, extension):
-    res = []
     for root, dirs, files in os.walk(search_path):
         for file in files:
             if file.endswith(extension):
-                res.append(os.path.join(root, file))
-    return res
+                yield open(os.path.join(root, file))
 
 
-def get_rows(file_path):
-    res = []
-    with open(file_path, 'r') as csvfile:
-        reader = csv.DictReader(csvfile, delimiter=',')
+def get_rows(files):
+    for fname in files:
+        reader = csv.DictReader(fname, delimiter=',')
         for row in reader:
-            res.append(row)
-    return res
+            yield row
 
 
 def main(user_search_path, user_extension, user_Name):
@@ -33,21 +30,18 @@ def main(user_search_path, user_extension, user_Name):
         'low': [],
         'close': []
     }
-    # собираем пути до файлов в массив
+    # создаем генератор с путями до файлов
     reports = search_reports(user_search_path, user_extension)
-    # проходимся циклом по массиву чтобы обработать каждый файл
-    for report in reports:
-        # извлекаем содержимое файла
-        rows = get_rows(report)
-        # обрабатываем содержимое файла по строкам
-        for row in rows:
-            # если поле Name в строке соотвествует параметру пользователя,\
-            # добавляем значения в словарь для результатов
-            if row['Name'] == user_Name:
-                result['open'].append(float(row['open']))
-                result['high'].append(float(row['high']))
-                result['low'].append(float(row['low']))
-                result['close'].append(float(row['close']))
+    # создаем генератор со строками из файлов
+    rows = get_rows(reports)
+    for row in rows: 
+        # если поле Name в строке соотвествует параметру пользователя,\
+        # добавляем значения в словарь для результатов
+        if row['Name'] == user_Name:
+            result['open'].append(float(row['open']))
+            result['high'].append(float(row['high']))
+            result['low'].append(float(row['low']))
+            result['close'].append(float(row['close']))
 
     # приводим значения в словаре для результатов от массива значений к среднему
     # округляем среднее до 3х знаков после точки
@@ -73,3 +67,6 @@ if __name__ == '__main__':
         user_Name = args.search_Name
     output = main(user_search_path, user_extension, user_Name)
     print(output)
+    current, peak = tracemalloc.get_traced_memory()
+    print(f"Current memory usage is {current / 10**6}MB; Peak was {peak / 10**6}MB")
+    tracemalloc.stop()
